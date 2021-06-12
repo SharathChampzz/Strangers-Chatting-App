@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Strangers</string>
+    <string name="go_to_map">Go to Map</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="show_me_nearby_users">Show Me NearBy Users</string>
+    <string name="login">Login</string>
+    <string name="enter_your_phone_number">Enter Your Phone Number</string>
+    <string name="enter_your_name">Enter Your Name</string>
+    <string name="chat_now">Chat Now</string>
+    <string name="user_name">User Name</string>
+    <string name="username">Username</string>
+    <string name="close_dialog">Close Dialog</string>
+
+    <string name="don_t_have_an_account_sign_up_here">Don\'t Have An Account ? Sign Up Here</string>
+    <string name="enter_your_password">Enter Your Password</string>
+    <string name="enter_your_gmail_id">Enter Your Gmail ID</string>
+    <string name="already_i_have_an_account">Already I Have An Account</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="enter_your_gmail">Enter Your Gmail</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="pick_profile_pic">Pick Profile Picture</string>
+    <string name="finish_setup">Finish Setup</string>
+
+    <string name="enter_our_message">Enter Your Message</string>
+    <string name="user_email_ids">User Email IDs</string>
+    <string name="type_your_friend_email">Type Your Friend Email</string>
+
+</resources>
