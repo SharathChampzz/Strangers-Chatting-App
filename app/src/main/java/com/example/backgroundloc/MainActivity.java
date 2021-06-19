@@ -3,6 +3,7 @@ package com.example.backgroundloc;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -21,11 +22,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -110,6 +113,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Setting Colors
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.pinktop)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.setStatusBarColor(getResources().getColor(R.color.chatnotColor));
+            window.setStatusBarColor(getResources().getColor(R.color.pinktop));
+        }
+
+
 //        getSupportActionBar().hide();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
@@ -185,10 +200,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (addFriendLayout.getVisibility() == View.VISIBLE) {
-                    // Its visible
+                    // EditText is Not visible, Show Cross Mark
+                    addfriend.setImageResource(R.drawable.ic_baseline_person_add_alt_1_24);
+                    profilepic.setVisibility(View.VISIBLE);
+                    edit.setVisibility(View.VISIBLE);
+                    gmap.setVisibility(View.VISIBLE);
+                    logout.setVisibility(View.VISIBLE);
+                    searchView.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
                     addFriendLayout.setVisibility(View.GONE);
                 } else {
-                    // Either gone or invisible
+                    // Edit Text is visible, Show Add Mark
+                    addfriend.setImageResource(R.drawable.ic_baseline_cancel_24);
+                    profilepic.setVisibility(View.GONE);
+                    edit.setVisibility(View.GONE);
+                    gmap.setVisibility(View.GONE);
+                    logout.setVisibility(View.GONE);
+                    searchView.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
+
                     addFriendLayout.setVisibility(View.VISIBLE);
                     friendName.requestFocus();
                 }
@@ -203,12 +233,32 @@ public class MainActivity extends AppCompatActivity {
                 String name = friendName.getText().toString().replaceAll("[^a-zA-Z0-9]", "");;
 
                 if(!name.equals("")){
-                    friendName.setText("");
-                    addFriendLayout.setVisibility(View.GONE);
-                    Toast.makeText(MainActivity.this, "Redirecting to Chatting window : " + name, Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                    intent.putExtra("email", name);
-                    startActivity(intent);
+
+                    DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("NearByUsers/Users");
+
+                    userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.hasChild(name)){
+                                Toast.makeText(MainActivity.this, "User Found! Chatting Allowed!", Toast.LENGTH_SHORT).show();
+                                friendName.setText("");
+                                addFriendLayout.setVisibility(View.GONE);
+                                Toast.makeText(MainActivity.this, "Redirecting to Chatting window : " + name, Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                intent.putExtra("email", name);
+                                startActivity(intent);
+                            }
+                            else{
+                                Toast.makeText(MainActivity.this, "Sorry! User couldn't find. ask Your friend to Join Strangers territory", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 }
                 else{
                     Toast.makeText(MainActivity.this, "Please Enter Your Friend Email Adress", Toast.LENGTH_SHORT).show();
@@ -378,6 +428,12 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
+                    profilepic.setVisibility(View.GONE);
+                    usernam.setVisibility(View.GONE);
+                    edit.setVisibility(View.GONE);
+                    addfriend.setVisibility(View.GONE);
+                    logout.setVisibility(View.GONE);
+                    gmap.setVisibility(View.GONE);
                     search(newText);
                     return true;
                 }
@@ -452,10 +508,13 @@ public class MainActivity extends AppCompatActivity {
     private void search(String str) {
         if (!str.equals("")) {
             ArrayList<String> myList = new ArrayList<>();
+            ArrayList<String> userEmailList = new ArrayList<>();
+
 
             for (String object : emailIdList){
                 if(object.toLowerCase().contains(str.toLowerCase())){
-                    myList.add(object);
+                    myList.add(userNameList.get(emailIdList.indexOf(object)));
+                    userEmailList.add(object);
                 }
             }
             AdapterClass adapterClass = new AdapterClass(myList);
@@ -464,7 +523,7 @@ public class MainActivity extends AppCompatActivity {
             adapterClass.setOnItemClickListener(new AdapterClass.OnClickItemListener() {
                 @Override
                 public void onItemClick(int position) {
-                    String key = myList.get(position);
+                    String key = userEmailList.get(position);
                     Log.d(TAG, " Searching Method : Key : " + key);
                     Log.d(TAG, "Position : " + position);
 

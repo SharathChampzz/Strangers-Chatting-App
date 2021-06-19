@@ -9,4 +9,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="whatsappsender">#E0FBCA</color>
     <color name="chatbackground">#EBE7E4</color>
+    <color name="chattopcolour">#065d54</color>
+    <color name="chatnotColor">#054d42</color>
+
+    <color name="pinktop">#ff8f8d</color>
+    <color name="pinkleft">#ebeaef</color>
+    <color name="pinkbackground">#f7f8fa</color>
 </resources>

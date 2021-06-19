@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/pinkbackground"
     tools:context=".MainActivity">
 
 
@@ -14,7 +15,9 @@
         android:layout_height="50dp"
         android:src="@drawable/ic_baseline_edit_24"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="5dp"
+        app:tint="@color/pinktop" />
 
     <ImageView
         android:id="@+id/addfriend"
@@ -25,6 +28,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="20dp"
+        app:tint="@color/pinktop"
         />
 
     <ImageView
@@ -36,13 +40,13 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="20dp"
+        app:tint="@color/pinktop"
         />
 
     <ImageView
         android:id="@+id/profileA"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         />
@@ -55,7 +59,9 @@
         android:layout_below="@id/profileA"
         android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
-        android:textStyle="italic"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="@string/sharath_champzz"
          />
 
     <ImageView
@@ -64,6 +70,8 @@
         android:layout_height="50dp"
         android:src="@drawable/ic_baseline_near_me_24"
         android:visibility="gone"
+        app:tint="@color/pinktop"
+        android:layout_marginTop="5dp"
         />
 
 <!--    <Button-->
@@ -80,7 +88,7 @@
         android:orientation="horizontal"
         android:layout_below="@+id/usernameA"
         android:id="@+id/addfriendLayout"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:layout_marginBottom="20dp"
         android:visibility="gone"
         >
@@ -93,6 +101,7 @@
             android:ems="10"
             android:hint="@string/type_your_friend_email"
             android:inputType="textPersonName"
+
             />
 
         <ImageButton
@@ -100,7 +109,8 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_person_add_alt_1_24" />
+            app:tint="@color/pinktop"
+            android:src="@drawable/ic_baseline_send_24" />
 
     </LinearLayout>
 
@@ -119,16 +129,17 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_margin="5dp"
-            android:background="#ffffff"
+            android:background="@color/pinktop"
             android:padding="10dp">
         </androidx.appcompat.widget.SearchView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:autofillHints="Search here"
+            android:background="@color/white"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" >
 
         </androidx.recyclerview.widget.RecyclerView>

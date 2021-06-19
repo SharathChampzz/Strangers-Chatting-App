@@ -11,20 +11,25 @@
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/pinktop"
+        >
 
         <Button
             android:id="@+id/nearby"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:background="@color/pinktop"
+            android:layout_weight="0.8"
             android:text="@string/show_me_nearby_users" />
 
         <ImageButton
             android:id="@+id/refreshbtn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.20"
             android:src="@drawable/ic_baseline_refresh_24"
+            android:background="@color/pinktop"
             />
 
     </LinearLayout>

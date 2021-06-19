@@ -31,7 +31,8 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
-
+import java.util.HashMap;
+import java.util.Map;
 
 /*
 Things to Save:
@@ -66,7 +67,10 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        if(uploading){
+        if(status){
+            super.onBackPressed();
+        }
+        else if(uploading){
             Toast.makeText(this, "Uploading Task Going on PLease wait!", Toast.LENGTH_SHORT).show();
         }
         else{
@@ -97,12 +101,19 @@ public class DetailsActivity extends AppCompatActivity {
             emailId = StorageClass.email;
         }
 
-
-        if(!StorageClass.phonenumber.equals("") && !StorageClass.username.equals("")){
-            username.setVisibility(View.GONE);
-            phoneNumber.setVisibility(View.GONE);
-            status = true;
+        try{
+            if(!StorageClass.phonenumber.equals("") && !StorageClass.username.equals("")){
+                username.setText(StorageClass.username);
+                phoneNumber.setText(StorageClass.phonenumber);
+                username.setVisibility(View.GONE);
+                phoneNumber.setVisibility(View.GONE);
+                status = true;
+            }
         }
+        catch (Exception err){
+            Log.e("Error Signup", err.getMessage());
+        }
+
 //        if(Phnum.equals("")){  // Fresh User
 //            //alert = findViewById(R.id.openWindow);
 //            Toast.makeText(this, "No Previous Login session Found!", Toast.LENGTH_SHORT).show();
@@ -202,7 +213,29 @@ public class DetailsActivity extends AppCompatActivity {
                                 //DatabaseReference current = FirebaseDatabase.getInstance().getReference("NearByUsers/Users/" + emailId);
 
                                 NearByUsers obj = new NearByUsers(StorageClass.username, StorageClass.profileurl, "", "", StorageClass.phonenumber );
-                                mDatabaseRef.setValue(obj);
+                                if (status){
+                                    Map <String, Object> hm = new HashMap<>();
+                                    hm.put("url", url.toString());
+                                    mDatabaseRef.updateChildren(hm).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(DetailsActivity.this, "Profile Pic Updated SucessFully!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                    )
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(DetailsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    ;
+                                }
+                                else{
+                                    mDatabaseRef.setValue(obj);
+                                }
+
+//
 //                    updateDataToFirebase();
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 finish();

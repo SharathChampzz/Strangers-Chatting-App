@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Strangers</string>
+    <string name="app_name">Strangers Territory</string>
     <string name="go_to_map">Go to Map</string>
     <string name="title_activity_maps">Map</string>
     <string name="show_me_nearby_users">Show Me NearBy Users</string>
@@ -11,7 +11,7 @@
     <string name="username">Username</string>
     <string name="close_dialog">Close Dialog</string>
 
-    <string name="don_t_have_an_account_sign_up_here">Don\'t Have An Account ? Sign Up Here</string>
+    <string name="don_t_have_an_account_sign_up_here">Dont Have An Account? Sign Up Here</string>
     <string name="enter_your_password">Enter Your Password</string>
     <string name="enter_your_gmail_id">Enter Your Gmail ID</string>
     <string name="already_i_have_an_account">Already I Have An Account</string>
@@ -24,5 +24,7 @@
     <string name="enter_our_message">Enter Your Message</string>
     <string name="user_email_ids">User Email IDs</string>
     <string name="type_your_friend_email">Type Your Friend Email</string>
+    <string name="name">Name</string>
+    <string name="sharath_champzz">Sharath Champzz</string>
 
 </resources>

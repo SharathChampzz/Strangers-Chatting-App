@@ -3,12 +3,21 @@ package com.example.backgroundloc;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.core.view.ViewCompat;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,18 +25,27 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.shape.CornerFamily;
+import com.google.android.material.shape.MaterialShapeDrawable;
+import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
-public class ChatActivity extends AppCompatActivity {
+import java.util.Objects;
 
-    ImageView sendbutton;
-    EditText msg;
+public class ChatActivity extends AppCompatActivity implements ExampleDialog.ExampleDialogListener {
+
+    ImageView sendbutton, report, user;
+    TextView name;
+    EditText msg, disease;
     LinearLayout linearLayout;
     ScrollView scroll;
+    String friendname, friendId;
 
     DatabaseReference myChatLocation, FriendChatLocation;
     @Override
@@ -35,8 +53,25 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        ActionBar actionBar = getSupportActionBar();
-        String friendId;
+//        View view = findViewById(R.id.chatLayoutA);
+//        View root = view.getRootView();
+//        root.setBackgroundColor(getResources().getColor(R.color.pinkbackground));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.setStatusBarColor(getResources().getColor(R.color.chatnotColor));
+            window.setStatusBarColor(getResources().getColor(R.color.pinktop));
+        }
+        report = findViewById(R.id.report);
+        name = findViewById(R.id.username);
+        user = findViewById(R.id.profile);
+        disease = findViewById(R.id.userreport);
+
+        Objects.requireNonNull(getSupportActionBar()).hide();
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.pinktop)));
+
         String mainA = getIntent().getStringExtra("email"); // This is from Mainactivity
         String dialogA = getIntent().getStringExtra("username"); // This is from Dialog Maps Activity
 
@@ -48,15 +83,42 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         //
-        actionBar.setTitle(friendId);
+        name.setText(friendId);
+//        actionBar.setTitle(friendId);
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("NearByUsers/Users/" + friendId);
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d("Snapshot : ", snapshot.toString());
-                String friendname = snapshot.child("name").getValue().toString();
+                friendname = snapshot.child("name").getValue().toString();
+                String url = snapshot.child("url").getValue().toString();
                 Log.d("Name Extracted ", friendname);
-                actionBar.setTitle(friendname);
+//                actionBar.setTitle(friendname);
+                try{
+                    name.setText(friendname);
+                    Picasso.get().load(url)
+                            .resize(75, 75)
+                            .into(user, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    //Toast.makeText(activity, "Shishya ee url ok na : " + url, Toast.LENGTH_SHORT).show();
+                                    Bitmap imageBitmap = ((BitmapDrawable) user.getDrawable()).getBitmap();
+                                    RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
+                                    imageDrawable.setCircular(true);
+                                    imageDrawable.setCornerRadius(Math.max(imageBitmap.getWidth(), imageBitmap.getHeight()) / 2.0f);
+                                    user.setImageDrawable(imageDrawable);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    user.setImageResource(R.drawable.logo);
+                                    Toast.makeText(getApplicationContext(), "Error Occured While Setting Profile Picture : " + e.toString(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+                catch(Exception err){
+                    Toast.makeText(ChatActivity.this, "Failed to Set : " + err.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -115,7 +177,8 @@ public class ChatActivity extends AppCompatActivity {
                             textView2.setText(message);
                             textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
 //                            textView2.setBackgroundColor(0x00e0fbca); // hex color 0xAARRGGBB
-                            textView2.setBackgroundResource(R.color.whatsappsender);
+//                            textView2.setBackgroundResource(R.color.whatsappsender);
+                            textView2.setBackgroundResource(R.color.pinktop);
                             textView2.setPadding(20, 20, 20, 20);
                             linearLayout.addView(textView2);
 
@@ -128,10 +191,19 @@ public class ChatActivity extends AppCompatActivity {
                             textView1.setLayoutParams(layoutParams);
                             textView1.setText(message);
 //                            textView1.setBackgroundColor(0xff66ff66); // hex color 0xAARRGGBB
-                            textView1.setBackgroundResource(R.color.white);
+//                            textView1.setBackgroundResource(R.color.white);
+                            textView1.setBackgroundResource(R.color.pinkleft);
                             textView1.setPadding(20, 20, 20, 20);// in
                             // pixels (left, top, right, bottom)
                             textView1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+//                            ShapeAppearanceModel shapeAppearanceModel = new ShapeAppearanceModel()
+//                                    .toBuilder()
+//                                    .setAllCorners(CornerFamily.ROUNDED,12f)
+//                                    .build();
+//
+////                            MaterialShapeDrawable shapeDrawable = new MaterialShapeDrawable(shapeAppearanceModel);
+////                            ViewCompat.setBackground(textView1,shapeDrawable);
+
                             linearLayout.addView(textView1);
                         }
 //                        Log.d("Messages : ", message);
@@ -156,5 +228,32 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+
+        report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                risetoast("Help us letting Know... What went wrong..");
+                openDialog();
+            }
+        });
+    }
+
+    private void risetoast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    public void openDialog() {
+        ExampleDialog exampleDialog = new ExampleDialog();
+        exampleDialog.show(getSupportFragmentManager(), "example dialog");
+    }
+
+    @Override
+    public void applyTexts(String reporttext) {
+        risetoast(reporttext);
+        Report obj = new Report(friendId, reporttext);
+        DatabaseReference mDatabase;
+        mDatabase = FirebaseDatabase.getInstance().getReference("NearByUsers/Reports");
+        mDatabase.push().setValue(obj);
+        risetoast("Thank you So Much For Letting Us Know!");
     }
 }
